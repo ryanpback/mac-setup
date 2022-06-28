@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "89d4ede0-05e2-431c-b038-4f5aa155272b",
+		"name": "Lilly App API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1516666"
+	},
+	"item": [
+		{
+			"name": "Auto Login",
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{lillyAppToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/auto_login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auto_login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get image by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{lillyAppToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/users/{{userID}}/images/{{imageID}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{userID}}",
+						"images",
+						"{{imageID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"ryanpback\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Image",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{lillyAppToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "lilly_app_upload",
+							"type": "file",
+							"src": "/Users/ryb1219/Documents/My Docs/pics/FAM/IMG_0818.HEIC"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/users/{{userID}}/images",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{userID}}",
+						"images"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Ryan\",\n    \"last_name\": \"Back\",\n    \"username\": \"ryanpback\",\n    \"email\": \"ryanpback@gmail.com\", \n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/register",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unregister User",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{lillyAppToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/users/{{userID}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{userID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "userID",
+			"value": "d2f68936-1869-4085-82d6-0fcff326f90f"
+		}
+	]
+}

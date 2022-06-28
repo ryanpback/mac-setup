@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "82d19786-e681-4ee1-be0e-60659c7b0ee7",
+		"name": "Recruiter API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1516666"
+	},
+	"item": [
+		{
+			"name": "Create User Profile",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Ryan\",\n    \"last_name\": \"Back\",\n    \"city\": \"Roseville\",\n    \"state\": \"CA\",\n    \"bio\": \"This is a test\",\n    \"intro\": \"I'm testing this\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/users/{{userId}}/profiles",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}",
+						"profiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit User Profile",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"first_name\": \"Ryan\",\n    \"last_name\": \"B\",\n    \"city\": \"Roseville\",\n    \"state\": \"CA\",\n    \"bio\": \"This is a test\",\n    \"intro\": \"I'm testing this\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/users/{{userId}}/profiles/{{userProfileId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}",
+						"profiles",
+						"{{userProfileId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response = JSON.parse(responseBody)",
+							"pm.environment.set(\"accessToken\", response.data.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"ryanpback@gmail.com\",\n    \"password\": \"pa55worD!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Save Resume",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "resume",
+							"type": "file",
+							"src": "/Users/ryb1219/Desktop/code/recruiter_api/spec/fixtures/valid_files/random_PDF.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/users/{{userId}}/profiles/{{userProfileId}}/resume",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}",
+						"profiles",
+						"{{userProfileId}}",
+						"resume"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Resume",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "resume",
+							"type": "file",
+							"src": "/Users/ryb1219/Desktop/code/recruiter_api/spec/fixtures/valid_files/random_PDF_2.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/users/{{userId}}/profiles/{{userProfileId}}/resume",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{userId}}",
+						"profiles",
+						"{{userProfileId}}",
+						"resume"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
