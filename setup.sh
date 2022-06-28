@@ -56,7 +56,6 @@ update_homebrew() {
 }
 
 install_git() {
-  _process "Installing git"
   brew install git
 
   _process "Installing git utilities"
@@ -102,10 +101,13 @@ brew_installs() {
     ruby-build \
     stern \
     tldr \
+    trash \
     tree \
     wget \
     zsh-autosuggestions \
     zsh-syntax-highlighting
+
+  TODO: Set postgres user and db
 }
 
 cleanup_brew() {
@@ -115,7 +117,7 @@ cleanup_brew() {
 
 install_fonts() {
   _process "Installing fonts"
-  brew cask install font-fira-code
+  brew install --cask font-fira-code
 }
 
 install_and_link_dotfiles() {
@@ -127,7 +129,7 @@ install_and_link_dotfiles() {
       _process "Dotfiles repo already exists locally. Pulling latest changes"
       cd $dotfiles_dir && git pull origin master
     else
-      git clone git@github.com:ryanpback/dotfiles.git $dotfiles_dir
+      git clone git@github-personal:ryanpback/dotfiles.git $dotfiles_dir
     fi
 
     _process "Symlinking dotfiles"
@@ -139,13 +141,16 @@ install_and_link_dotfiles() {
 install_zsh_plugins() {
   _process "Installing Powerlevel10k"
   local zshdownloadpath=~/.zsh
-  local powerlevel10kpath=~/.zsh/powerlevel10k
-  local zshzpath=~/.zsh/zsh-z
+  local powerlevel10kpath=$zshdownloadpath/powerlevel10k
+  local zshzpath=$zshdownloadpath/zsh-z
 
   if [ ! -d $powerlevel10kpath ]; then
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $zshdownloadpath
   else
     _process "Powerlevel10k already exists"
+    (
+      cd $powerlevel10kpath && git pull
+    )
   fi
 
   _process "Installing zsh-z"
@@ -153,7 +158,33 @@ install_zsh_plugins() {
     git clone https://github.com/agkozak/zsh-z.git $zshdownloadpath
   else
     _process "zsh-z already exists"
+    (
+      cd $zshzpath && git pull
+    )
   fi
+}
+
+install_vim_plugins() {
+  _proceess "Installing Vim Plugin Manager (Vundle)..."
+  local bundledownloadpath=~/.vim/bundle
+  local vundlepath=$bundledownloadpath/Vundle.vim
+
+  if [ ! -d $vundlepath ]; then
+    git clone https://github.com/VundleVim/Vundle.vim.git $vundlepath
+  else
+    _process "Vundle already exists"
+    (
+      cd $vundlepath && git pull
+    )
+  fi
+
+  _process "Installing plugins from .vimrc"
+  vim -c 'PluginInstall' -c 'qa!' <<< "\n" >/dev/null 2>&1
+}
+
+set_macos_defaults() {
+  _process "Installing default preferences"
+  source ~/.dotfiles/config/.macos
 }
 
 _process "Building Macbook. This may take a bit"
@@ -168,5 +199,6 @@ _process "Building Macbook. This may take a bit"
 # install_fonts
 # install_and_link_dotfiles
 # install_zsh_plugins
-# install vim plugins
-
+# install_vim_plugins
+# Dont forget to install mindnode
+# set_macos_defaults # this should be last. It requires a reboot
