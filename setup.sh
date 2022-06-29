@@ -1,6 +1,10 @@
 #!/bin/bash
 
-LOG="${HOME}/Library/Logs/dotfiles.log"
+LOG=$HOME/Library/Logs/dotfiles.log
+DOTFILES_DIR=$HOME/.dotfiles
+DOTFILES_CONFIG_DIR=$DOTFILES_DIR/config
+ZSH_CONFIG_DIR=$HOME/.zsh
+VIM_CONFIG_DIR=$HOME/.vim
 
 _process() {
   echo "$(date) PROCESSING: -> $@" >> $LOG
@@ -106,8 +110,6 @@ brew_installs() {
     wget \
     zsh-autosuggestions \
     zsh-syntax-highlighting
-
-  TODO: Set postgres user and db
 }
 
 cleanup_brew() {
@@ -120,34 +122,38 @@ install_fonts() {
   brew install --cask font-fira-code
 }
 
-install_and_link_dotfiles() {
+install_dotfiles() {
   _process "Installing dotfiles repo"
-  local dotfiles_dir=$HOME/.dotfiles
-
   (
-    if [ -d "$dotfiles_dir" ]; then
-      _process "Dotfiles repo already exists locally. Pulling latest changes"
-      cd $dotfiles_dir && git pull origin master
+    if [ ! -d "$DOTFILES_DIR" ]; then
+      git clone git@github-personal:ryanpback/dotfiles.git $DOTFILES_DIR
     else
-      git clone git@github-personal:ryanpback/dotfiles.git $dotfiles_dir
+      _process "Dotfiles repo already exists locally ... Pulling latest changes"
+      cd $DOTFILES_DIR && git pull origin master
     fi
+  )
+}
 
+link_dotfiles() {
     _process "Symlinking dotfiles"
-    cd $dotfiles_dir
+  (
+    cd $DOTFILES_DIR
     ./link-dotfiles.sh
   )
 }
 
 install_zsh_plugins() {
   _process "Installing Powerlevel10k"
-  local zshdownloadpath=~/.zsh
-  local powerlevel10kpath=$zshdownloadpath/powerlevel10k
-  local zshzpath=$zshdownloadpath/zsh-z
+  local powerlevel10kpath=$ZSH_CONFIG_DIR/powerlevel10k
+  local zshzpath=$ZSH_CONFIG_DIR/zsh-z
 
   if [ ! -d $powerlevel10kpath ]; then
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $zshdownloadpath
+    mkdir -p $powerlevel10kpath
+    (
+      cd $powerlevel10kpath && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git .
+    )
   else
-    _process "Powerlevel10k already exists"
+    _process "Powerlevel10k already exists ... Pulling latest changes"
     (
       cd $powerlevel10kpath && git pull
     )
@@ -155,37 +161,49 @@ install_zsh_plugins() {
 
   _process "Installing zsh-z"
   if [ ! -d $zshzpath ]; then
-    git clone https://github.com/agkozak/zsh-z.git $zshdownloadpath
+    mkdir -p $zshzpath
+    (
+      cd $zshzpath && git clone https://github.com/agkozak/zsh-z.git .
+    )
   else
-    _process "zsh-z already exists"
+    _process "zsh-z already exists ... Pulling latest changes"
     (
       cd $zshzpath && git pull
     )
   fi
 }
 
-install_vim_plugins() {
-  _proceess "Installing Vim Plugin Manager (Vundle)..."
-  local bundledownloadpath=~/.vim/bundle
+install_vundle() {
+  _process "Installing Vim Plugin Manager (Vundle)"
+  local bundledownloadpath=$VIM_CONFIG_DIR/bundle
   local vundlepath=$bundledownloadpath/Vundle.vim
 
   if [ ! -d $vundlepath ]; then
-    git clone https://github.com/VundleVim/Vundle.vim.git $vundlepath
+    mkdir -p $vundlepath
+    (
+      cd $vundlepath && git clone https://github.com/VundleVim/Vundle.vim.git .
+    )
   else
-    _process "Vundle already exists"
+    _process "Vundle already exists ... Pulling latest changes"
     (
       cd $vundlepath && git pull
     )
   fi
+}
 
-  _process "Installing plugins from .vimrc"
+install_vim_plugins() {
+  _process "Installing vim plugins"
   vim -c 'PluginInstall' -c 'qa!' <<< "\n" >/dev/null 2>&1
 }
 
 set_macos_defaults() {
   _process "Installing default preferences"
-  source ~/.dotfiles/config/.macos
+  source $DOTFILES_CONFIG_DIR/.macos
 }
+
+# reboot() {
+  # shutdown -r now
+# }
 
 _process "Building Macbook. This may take a bit"
 # set_default_shell
@@ -197,8 +215,39 @@ _process "Building Macbook. This may take a bit"
 # brew_installs
 # cleanup_brew
 # install_fonts
-# install_and_link_dotfiles
-# install_zsh_plugins
-# install_vim_plugins
+# install_dotfiles
+# link_dotfiles
+install_zsh_plugins
+install_vundle
+install_vim_plugins
 # Dont forget to install mindnode
+# Install npm, nvm, yarn
 # set_macos_defaults # this should be last. It requires a reboot
+# reboot
+
+# Apps:
+# 1Password 7
+# Better Snap Tool
+# Charles?
+# CopyClip 2
+# Docker
+# Git
+# Github desktop
+# GPG Keychain
+# Grammarly
+# Gsutil
+# iTerm
+# Itsycal
+# Karabiner-elements
+# Karabiner-eventViewer
+# Krew
+# Logitech options
+# MindNode
+# npm/node/nvm/yarn
+# Postman
+# Rbenv
+# Spotify
+# Stern
+# Vscode
+# XCode
+# Zoom
