@@ -196,6 +196,22 @@ install_vim_plugins() {
   vim -c 'PluginInstall' -c 'qa!' <<< "\n" >/dev/null 2>&1
 }
 
+install_nvm_node_yarn() {
+  _process "Installing NVM"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+  _process "Sourcing NVM in subshell"
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+  _process "Installing Node LTS"
+  nvm install node
+
+  _process "Installing Yarn"
+  npm i -g yarn
+}
+
 set_macos_defaults() {
   _process "Installing default preferences"
   source $DOTFILES_CONFIG_DIR/.macos
@@ -217,11 +233,11 @@ _process "Building Macbook. This may take a bit"
 # install_fonts
 # install_dotfiles
 # link_dotfiles
-install_zsh_plugins
-install_vundle
-install_vim_plugins
+# install_zsh_plugins
+# install_vundle
+# install_vim_plugins
+# install_nvm_node_yarn
 # Dont forget to install mindnode
-# Install npm, nvm, yarn
 # set_macos_defaults # this should be last. It requires a reboot
 # reboot
 
